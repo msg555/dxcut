@@ -1,0 +1,35 @@
+/*
+Copyright (C) 2010 Mark Gordon
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+#ifndef DEX_METHODS_H
+#define DEX_METHODS_H
+
+#include <dxcut/dex.h>
+#include <dxcut/method.h>
+
+#include "common.h"
+
+#define METHOD_ID_ELEMENT_SIZE 8
+
+extern
+int dxc_read_method_section(read_context* ctx, dx_uint off, dx_uint size);
+
+extern
+int dxc_read_encoded_method(read_context* ctx, DexMethod* method,
+                            ref_str* parent, dx_uint* method_idx,
+                            dx_uint* off);
+
+#endif // DEX_METHODS_H

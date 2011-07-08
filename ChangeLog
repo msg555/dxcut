@@ -1,0 +1,8 @@
+2011 July 7th
+
+* Hello GitHub!
+*   This is the initial commit of dxcut to github (moving from sourceforge).
+*   For anyone who may actually be familiar with the project from sourceforge
+*   this repository omits anything not directly related to the dxcut library
+*   (no tools).  Any tools that will continue to be maintained will have their
+*   own repository.

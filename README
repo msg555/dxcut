@@ -1,0 +1,94 @@
+Welcome to dxcut, a library for reading, creating, editing, and writing Dalvik
+executable (dex) files.  This readme will serve as a quick introduction to
+getting familiar with the library.  You should be able to find documentation for
+dxcut on http://dxcut.sourceforge.net/cdocs/html/annotated.html though the
+header files are intended to be self documenting.
+
+=============
+INSTALLATION
+
+The dxcut library uses a standard automake setup.  To compile and install on
+your machine run the following commands.
+
+./configure
+make
+make install
+
+This will libdxcut and libdxcutcc in both static and dynamic library forms and
+install it to whatever prefix you specify in addition to the dxcut headers.
+
+
+=============
+BACKGROUND-INFO
+
+If you plan on manipulating the Dalvik bytecode directly I suggest you read
+http://android.git.kernel.org/?p=platform/dalvik.git;a=blob_plain;f=docs/dalvik-bytecode.html;hb=HEAD
+.  There is no documentation within dxcut on what each instruction does so this
+reference is quite important.
+
+Most of the structures within dxcut mirror structures described at
+http://android.git.kernel.org/?p=platform/dalvik.git;a=blob_plain;f=docs/dex-format.html;hb=HEAD
+so you can sometimes get more information if you find the dxcut documentation
+insufficient.  EVERYONE who plans to use this library should read the section
+titled "TypeDescriptor Semantics".
+
+
+=============
+BASIC USAGE
+
+This documentation will follow the usage of the dxcut C bindings.  The C++
+bindings are not as well supported and there are some library features that are
+missing while using the C++ bindings so I discourage their use.
+
+The first thing you should know about the dxcut library is that almost every
+string is enclosed in a 'ref_str'.  This is of course short for 'reference
+counted string' and is used to significantly lower the memory footprint of
+dxcut.  Similarly arrays of strings are stored in ref_strstr structures.  Below
+are the relavant details:
+
+typedef struct {
+  dx_uint cnt;
+  char s[1];
+} ref_str;
+
+dxc_induct_str(const char* s);
+dxc_copy_str(ref_str* s);
+dxc_free_str(ref_str* s);
+
+ref_str* str = dxc_induct_str("Hello World");
+ref_str* cpy = dxc_copy_str(str);
+dxc_free_str(str); // Does not destroy the string as a reference still exists.
+puts(cpy->s); // Outputs 'Hello World'
+dxc_free_str(cpy); // Destroys the string
+
+Second most lists of things are sentinel terminated.  For most data types there
+is a corresponding function to determine if the data type is a terminator (see
+the header files for more information on specific data types).  For example you
+iterate over the classes of a DexFile like:
+
+DexClass* cl;
+for(cl = file->classes; !dxc_is_sentinel_class(cl); ++cl) {
+  puts(cl->name->s); // Process class cl.
+}
+
+Last here is some boiler plate code to iterate over every instruction of a dex
+file:
+
+DexFile* file = dxc_read_file(fin);
+for(DexClass* cl = file->classes; !dxc_is_sentinel_class(cl); ++cl) {
+  for(int iter = 0; iter < 2; iter++)
+  for(DexMethod* mtd = iter ? cl->direct_methods : cl->virtual_methods;
+      !dxc_is_sentinel_method(mtd); ++mtd) {
+    DexCode* code = mtd->code_body;
+    if(!code) continue;
+
+    for(int i = 0; i < code->insns_count; ++i) {
+      DexInstruction* in = code->insns + i;
+      puts(dex_opcode_formats[in->opcode].name);
+    }
+  }
+}
+
+Enjoy!
+
+-Mark (msg555)
