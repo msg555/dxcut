@@ -1655,7 +1655,6 @@ void dxc_write_file(DexFile* dex, FILE* fout) {
   init_ctx(&ctx);
   constant_pool* pool = &ctx.pool;
   pop_array(dex->classes, pool, dxc_is_sentinel_class, pop_class);
-  add_aux_pool(dex, pool);
 
   int pos;
   dx_uint i;

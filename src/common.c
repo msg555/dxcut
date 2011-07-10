@@ -62,6 +62,7 @@ ref_strstr* dxc_create_strstr(dx_uint sz) {
 
 raw_field dxc_copy_raw_field(raw_field fld) {
   raw_field ret;
+  memset(&ret, 0, sizeof(ret));
   ret.defining_class = dxc_copy_str(fld.defining_class);
   ret.name = dxc_copy_str(fld.name);
   ret.type = dxc_copy_str(fld.type);
@@ -70,6 +71,7 @@ raw_field dxc_copy_raw_field(raw_field fld) {
 
 raw_method dxc_copy_raw_method(raw_method mtd) {
   raw_method ret;
+  memset(&ret, 0, sizeof(ret));
   ret.defining_class = dxc_copy_str(mtd.defining_class);
   ret.name = dxc_copy_str(mtd.name);
   ret.prototype = dxc_copy_strstr(mtd.prototype);
