@@ -1152,7 +1152,7 @@ void write_dalvik(write_context* ctx, data_item* d,
                 param[1] = v & 0xFFFF;
                 break;
               case 2:
-                param[2] = (param[2] & 0x00FF) | v << 8;
+                param[1] = (param[1] & 0x00FF) | v << 8;
                 break;
               default:
                 DXC_ERROR("unhandled special alignment");
