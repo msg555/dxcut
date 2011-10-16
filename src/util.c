@@ -112,11 +112,16 @@ void dorename_class(ref_str** val, RenameContext* ctx) {
 }
 
 static
-void rename_strstr(ref_strstr* ss, RenameContext* ctx) {
-  ref_str** s;
-  for(s = ss->s; *s; s++) {
-    dorename_class(s, ctx);
+void rename_strstr(ref_strstr** ss, RenameContext* ctx) {
+  int i = 0;
+  for(i = 0; (*ss)->s[i]; i++);
+  ref_strstr* result = dxc_create_strstr(i);
+  for(i--; i >= 0; i--) {
+    result->s[i] = dxc_copy_str((*ss)->s[i]);
+    dorename_class(&result->s[i], ctx);
   }
+  dxc_free_strstr(*ss);
+  *ss = result;
 }
 
 static
@@ -146,7 +151,7 @@ void rename_value(DexValue* val, RenameContext* ctx) {
     } case VALUE_METHOD: {
       dorename_method(&val->value.val_method, ctx);
       dorename_class(&val->value.val_method.defining_class, ctx);
-      rename_strstr(val->value.val_method.prototype, ctx);
+      rename_strstr(&val->value.val_method.prototype, ctx);
       break;
     } case VALUE_ENUM: {
       dorename_field(&val->value.val_enum, ctx);
@@ -219,7 +224,7 @@ void rename_method(DexMethod* method, RenameContext* ctx, ref_str* cl) {
   dxc_free_str(mtd.name);
   dxc_free_strstr(mtd.prototype);
 
-  rename_strstr(method->prototype, ctx);
+  rename_strstr(&method->prototype, ctx);
   DexCode* code = method->code_body;
   if(code) {
     DexDebugInfo* dbg = code->debug_information;
@@ -253,7 +258,7 @@ void rename_method(DexMethod* method, RenameContext* ctx, ref_str* cl) {
         } case SPECIAL_METHOD: {
           dorename_method(&in->special.method, ctx);
           dorename_class(&in->special.method.defining_class, ctx);
-          rename_strstr(in->special.method.prototype, ctx);
+          rename_strstr(&in->special.method.prototype, ctx);
           break;
         }
         case SPECIAL_NONE: case SPECIAL_CONSTANT: case SPECIAL_TARGET:
@@ -357,7 +362,7 @@ void dxc_rename_identifiers(DexFile* file,
     }
     dorename_class(&cl->name, &ctx);
     dorename_class(&cl->super_class, &ctx);
-    rename_strstr(cl->interfaces, &ctx);
+    rename_strstr(&cl->interfaces, &ctx);
   }
 
   free(ctx.source_fields); free(ctx.dest_fields);
