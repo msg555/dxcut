@@ -1292,7 +1292,7 @@ dx_uint write_code_item(write_context* ctx, DexCode* code) {
 }
 
 static
-dx_uint write_class_data(write_context* ctx, DexClass* cl) {
+dx_uint write_class_data(write_context* ctx, DexClass* cl, DexValue** svalues) {
   constant_pool* pool = &ctx->pool;
 
   dx_uint static_fields_sz = 0;
@@ -1380,13 +1380,46 @@ dx_uint write_class_data(write_context* ctx, DexClass* cl) {
   write_uleb(&d, virtual_methods_sz);
   dx_uint last_id = 0;
 
+  dx_uint orig_svalues_sz = 0;
+  DexValue* val;
+  for(val = cl->static_values; !dxc_is_sentinel_value(val); ++val) {
+    orig_svalues_sz++;
+  }
+
+  DexValue* new_svalues = (DexValue*)calloc(static_fields_sz + 1,
+                                            sizeof(DexValue));
   for(i = 0; i < static_fields_sz; i++) {
+    switch(cl->static_fields[static_field_offs[i].index].type->s[0]) {
+      case 'B': new_svalues[i].type = VALUE_BYTE; break;
+      case 'S': new_svalues[i].type = VALUE_SHORT; break;
+      case 'C': new_svalues[i].type = VALUE_CHAR; break;
+      case 'I': new_svalues[i].type = VALUE_INT; break;
+      case 'J': new_svalues[i].type = VALUE_LONG; break;
+      case 'F': new_svalues[i].type = VALUE_FLOAT; break;
+      case 'D': new_svalues[i].type = VALUE_DOUBLE; break;
+      case 'Z': new_svalues[i].type = VALUE_BOOLEAN; break;
+      case 'L': case '[': new_svalues[i].type = VALUE_NULL; break;
+      default: DXC_ERROR("unknown static field type");
+    }
+  }
+  dxc_make_sentinel_value(new_svalues + static_fields_sz);
+
+  for(i = 0; i < static_fields_sz; i++) {
+    if(static_field_offs[i].index < orig_svalues_sz) {
+      new_svalues[i] = cl->static_values[static_field_offs[i].index];
+    }
     fld = cl->static_fields + static_field_offs[i].index;
     dx_uint next_id = static_field_offs[i].id;
     write_uleb(&d, next_id - last_id);
     write_uleb(&d, fld->access_flags);
     last_id = next_id;
   }
+  if(svalues) {
+    *svalues = new_svalues;
+  } else {
+    free(new_svalues);
+  }
+
   last_id = 0;
   for(i = 0; i < instance_fields_sz; i++) {
     fld = cl->instance_fields + instance_field_offs[i].index;
@@ -1524,10 +1557,13 @@ void write_class(write_context* ctx, DexClass* cl) {
      dxc_is_sentinel_method(cl->direct_methods) &&
      dxc_is_sentinel_method(cl->virtual_methods)) {
     write_uint(&d, 0);
+    write_resolve(&d, write_encoded_array_item(ctx, cl->static_values));
   } else {
-    write_resolve(&d, write_class_data(ctx, cl));
+    DexValue* svalues = NULL;
+    write_resolve(&d, write_class_data(ctx, cl, &svalues));
+    write_resolve(&d, write_encoded_array_item(ctx, svalues));
+    free(svalues);
   }
-  write_resolve(&d, write_encoded_array_item(ctx, cl->static_values));
 
   add_data(ctx, d);
 }
