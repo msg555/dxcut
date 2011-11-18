@@ -61,7 +61,7 @@ void dxc_free_method(DexMethod* method);
  *  \brief Returns true if this method marks the end of a method list.
  */
 extern
-int dxc_is_sentinel_method(DexMethod* method);
+int dxc_is_sentinel_method(const DexMethod* method);
 
 /** \fn void dxc_make_sentinel_method(DexMethod* method)
  *  \brief Marks this method as the end of a list.

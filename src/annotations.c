@@ -202,7 +202,7 @@ void dxc_free_annotation(DexAnnotation* annotation) {
   free(annotation->parameters);
 }
 
-int dxc_is_sentinel_annotation(DexAnnotation* annotation) {
+int dxc_is_sentinel_annotation(const DexAnnotation* annotation) {
   return annotation->parameters == NULL;
 }
 
@@ -216,7 +216,7 @@ void dxc_free_parameter(DexNameValuePair* parameter) {
   dxc_free_value(&parameter->value);
 }
 
-int dxc_is_sentinel_parameter(DexNameValuePair* parameter) {
+int dxc_is_sentinel_parameter(const DexNameValuePair* parameter) {
   return parameter->name == NULL;
 }
 

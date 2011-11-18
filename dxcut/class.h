@@ -95,7 +95,7 @@ void dxc_free_class(DexClass* cl);
  *  \brief Returns true if this class marks the end of a class list.
  */
 extern
-int dxc_is_sentinel_class(DexClass* cl);
+int dxc_is_sentinel_class(const DexClass* cl);
 
 /** \fn void dxc_make_sentinel_class(DexClass* cl)
  *  \brief Marks the passed class as the end of a list.

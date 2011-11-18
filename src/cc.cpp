@@ -145,15 +145,16 @@ ccDexFile& ccDexFile::operator=(const ccDexFile& x) {
 }
 
 static
-void fill_str_array(vector<string>& v, ref_str** sa) {
-  for(ref_str** s = sa; *s; s++) {
+void fill_str_array(vector<string>& v, const ref_str*const* sa) {
+  for(const ref_str*const* s = sa; *s; s++) {
     v.push_back((*s)->s);
   }
 }
 
 template<typename ccT, typename T>
-static void fill_array(std::vector<ccT>& A, T* v, int(*sentinel_func)(T*),
-                void(*fill_func)(ccT&, T*)) {
+static void fill_array(std::vector<ccT>& A, const T* v,
+                       int(*sentinel_func)(const T*),
+                       void(*fill_func)(ccT&, const T*)) {
   int sz = 0;
   while(!sentinel_func(v + sz)) sz++;
   A.resize(sz);
@@ -163,16 +164,16 @@ static void fill_array(std::vector<ccT>& A, T* v, int(*sentinel_func)(T*),
 }
 
 static
-void fill_value(ccDexValue& ccval, DexValue* val);
+void fill_value(ccDexValue& ccval, const DexValue* val);
 
 static
-void fill_parameter(ccDexNameValuePair& ccnvp, DexNameValuePair* nvp) {
+void fill_parameter(ccDexNameValuePair& ccnvp, const DexNameValuePair* nvp) {
   ccnvp.name = nvp->name->s;
   fill_value(ccnvp.value, &nvp->value);
 }
 
 static
-void fill_annotation(ccDexAnnotation& ccan, DexAnnotation* an) {
+void fill_annotation(ccDexAnnotation& ccan, const DexAnnotation* an) {
   ccan.visibility = an->visibility;
   ccan.type = an->type->s;
   fill_array(ccan.parameters, an->parameters, dxc_is_sentinel_parameter,
@@ -180,7 +181,7 @@ void fill_annotation(ccDexAnnotation& ccan, DexAnnotation* an) {
 }
 
 static
-void fill_value(ccDexValue& ccval, DexValue* val) {
+void fill_value(ccDexValue& ccval, const DexValue* val) {
   ccval.type = val->type;
   ccval.val_annotation = NULL;
   switch(val->type) {
@@ -223,7 +224,7 @@ void fill_value(ccDexValue& ccval, DexValue* val) {
 }
 
 static
-void fill_field(ccDexField& ccfield, DexField* field) {
+void fill_field(ccDexField& ccfield, const DexField* field) {
   ccfield.access_flags = field->access_flags;
   ccfield.type = field->type->s;
   ccfield.name = field->name->s;
@@ -232,13 +233,13 @@ void fill_field(ccDexField& ccfield, DexField* field) {
 }
 
 static
-void fill_handler(ccDexHandler& cchandler, DexHandler* handler) {
+void fill_handler(ccDexHandler& cchandler, const DexHandler* handler) {
   cchandler.type = handler->type ? handler->type->s : "";
   cchandler.addr = handler->addr;
 }
 
 static
-void fill_try_block(ccDexTryBlock& cctr, DexTryBlock* tr) {
+void fill_try_block(ccDexTryBlock& cctr, const DexTryBlock* tr) {
   cctr.start_addr = tr->start_addr;
   cctr.insn_count = tr->insn_count;
   fill_array(cctr.handlers, tr->handlers, dxc_is_sentinel_handler,
@@ -253,7 +254,7 @@ void fill_try_block(ccDexTryBlock& cctr, DexTryBlock* tr) {
 
 static
 void fill_debug_insn(ccDexDebugInstruction& ccdebug,
-                     DexDebugInstruction* debug) {
+                     const DexDebugInstruction* debug) {
   ccdebug.opcode = debug->opcode;
   switch(debug->opcode) {
     case DBG_ADVANCE_PC: ccdebug.addr_diff = debug->p.addr_diff; break;
@@ -276,7 +277,7 @@ void fill_debug_insn(ccDexDebugInstruction& ccdebug,
 }
 
 static
-void fill_debug_info(ccDexDebugInfo& ccdebug, DexDebugInfo* debug) {
+void fill_debug_info(ccDexDebugInfo& ccdebug, const DexDebugInfo* debug) {
   ccdebug.line_start = debug->line_start;
   fill_str_array(ccdebug.parameter_names, debug->parameter_names->s);
   for(int i = 0; ; i++) {
@@ -289,7 +290,7 @@ void fill_debug_info(ccDexDebugInfo& ccdebug, DexDebugInfo* debug) {
 }
 
 static
-void fill_insn(ccDexInstruction& ccin, DexInstruction* in) {
+void fill_insn(ccDexInstruction& ccin, const DexInstruction* in) {
   ccin.opcode = in->opcode;
   ccin.hi_byte = in->hi_byte;
   if(ccin.opcode == OP_PSUEDO && ccin.hi_byte != PSUEDO_OP_NOP) {
@@ -356,7 +357,7 @@ void fill_insn(ccDexInstruction& ccin, DexInstruction* in) {
 }
 
 static
-void fill_code_body(ccDexCode& cccode, DexCode* code) {
+void fill_code_body(ccDexCode& cccode, const DexCode* code) {
   cccode.registers_size = code->registers_size;
   cccode.ins_size = code->ins_size;
   cccode.outs_size = code->outs_size;
@@ -375,7 +376,7 @@ void fill_code_body(ccDexCode& cccode, DexCode* code) {
 }
 
 static
-void fill_method(ccDexMethod& ccmethod, DexMethod* method) {
+void fill_method(ccDexMethod& ccmethod, const DexMethod* method) {
   ccmethod.access_flags = method->access_flags;
   ccmethod.name = method->name->s;
   fill_str_array(ccmethod.prototype, method->prototype->s);
@@ -396,7 +397,7 @@ void fill_method(ccDexMethod& ccmethod, DexMethod* method) {
 }
 
 static
-void fill_class(ccDexClass& cccl, DexClass* cl) {
+void fill_class(ccDexClass& cccl, const DexClass* cl) {
   cccl.name = cl->name->s;
   cccl.access_flags = cl->access_flags;
   cccl.super_class = cl->super_class ? cl->super_class->s : "";
@@ -417,7 +418,7 @@ void fill_class(ccDexClass& cccl, DexClass* cl) {
 }
 
 static
-void fill_metadata(ccOdexData& ccomd, OdexData* omd) {
+void fill_metadata(ccOdexData& ccomd, const OdexData* omd) {
   for(int i = 0; i < 20; i++) ccomd.id.push_back(omd->id[i]);
   ccomd.flags = omd->flags;
   ccomd.odex_version = omd->odex_version;
@@ -440,7 +441,7 @@ void fill_metadata(ccOdexData& ccomd, OdexData* omd) {
 }
 
 static
-void fill_cc(ccDexFile& ccf, DexFile* f) {
+void fill_cc(ccDexFile& ccf, const DexFile* f) {
   fill_array(ccf.classes, f->classes, dxc_is_sentinel_class, fill_class);
   if(f->metadata) {
     ccf.metadata = new ccOdexData;
@@ -796,181 +797,181 @@ void copy_file(const ccDexFile& ccf, DexFile* f) {
   }
 }
 
-void ccDexValue::copy_from(DexValue* val) {
+void ccDexValue::copy_from(const DexValue* val) {
   fill_value(*this, val);
 }
 
-void ccDexValue::copy_to(DexValue* val) {
+void ccDexValue::copy_to(DexValue* val) const {
   copy_value(*this, val);
 }
 
-DexValue* ccDexValue::copy() {
+DexValue* ccDexValue::copy() const {
   DexValue* ret = (DexValue*)calloc(1, sizeof(DexValue));
   copy_value(*this, ret);
   return ret;
 }
 
-void ccDexNameValuePair::copy_from(DexNameValuePair* nvp) {
+void ccDexNameValuePair::copy_from(const DexNameValuePair* nvp) {
   fill_parameter(*this, nvp);
 }
 
-void ccDexNameValuePair::copy_to(DexNameValuePair* nvp) {
+void ccDexNameValuePair::copy_to(DexNameValuePair* nvp) const {
   copy_parameter(*this, nvp);
 }
 
-DexNameValuePair* ccDexNameValuePair::copy() {
+DexNameValuePair* ccDexNameValuePair::copy() const {
   DexNameValuePair* ret =
       (DexNameValuePair*)calloc(1, sizeof(DexNameValuePair));
   copy_parameter(*this, ret);
   return ret;
 }
 
-void ccDexAnnotation::copy_from(DexAnnotation* an) {
+void ccDexAnnotation::copy_from(const DexAnnotation* an) {
   fill_annotation(*this, an);
 }
 
-void ccDexAnnotation::copy_to(DexAnnotation* an) {
+void ccDexAnnotation::copy_to(DexAnnotation* an) const {
   copy_annotation(*this, an);
 }
 
-DexAnnotation* ccDexAnnotation::copy() {
+DexAnnotation* ccDexAnnotation::copy() const {
   DexAnnotation* ret = (DexAnnotation*)calloc(1, sizeof(DexAnnotation));
-  fill_annotation(*this, ret);
+  copy_annotation(*this, ret);
   return ret;
 }
 
-void ccDexField::copy_from(DexField* fld) {
+void ccDexField::copy_from(const DexField* fld) {
   fill_field(*this, fld);
 }
 
-void ccDexField::copy_to(DexField* fld) {
+void ccDexField::copy_to(DexField* fld) const {
   copy_field(*this, fld);
 }
 
-DexField* ccDexField::copy() {
+DexField* ccDexField::copy() const {
   DexField* ret = (DexField*)calloc(1, sizeof(DexField));
-  fill_field(*this, ret);
+  copy_field(*this, ret);
   return ret;
 }
 
-void ccDexDebugInstruction::copy_from(DexDebugInstruction* dbg_insn) {
+void ccDexDebugInstruction::copy_from(const DexDebugInstruction* dbg_insn) {
   fill_debug_insn(*this, dbg_insn);
 }
 
-void ccDexDebugInstruction::copy_to(DexDebugInstruction* dbg_insn) {
+void ccDexDebugInstruction::copy_to(DexDebugInstruction* dbg_insn) const {
   copy_debug_insn(*this, dbg_insn);
 }
 
-DexDebugInstruction* ccDexDebugInstruction::copy() {
+DexDebugInstruction* ccDexDebugInstruction::copy() const {
   DexDebugInstruction* ret =
       (DexDebugInstruction*)calloc(1, sizeof(DexDebugInstruction));
   copy_debug_insn(*this, ret);
   return ret;
 }
 
-void ccDexDebugInfo::copy_from(DexDebugInfo* debug_info) {
+void ccDexDebugInfo::copy_from(const DexDebugInfo* debug_info) {
   fill_debug_info(*this, debug_info);
 }
 
-DexDebugInfo* ccDexDebugInfo::copy() {
+DexDebugInfo* ccDexDebugInfo::copy() const {
   DexDebugInfo* ret = (DexDebugInfo*)calloc(1, sizeof(DexDebugInfo));
   copy_debug_info(*this, ret);
   return ret;
 }
 
-void ccDexHandler::copy_from(DexHandler* handler) {
+void ccDexHandler::copy_from(const DexHandler* handler) {
   fill_handler(*this, handler);
 }
 
-void ccDexHandler::copy_to(DexHandler* handler) {
+void ccDexHandler::copy_to(DexHandler* handler) const {
   copy_handler(*this, handler);
 }
 
-DexHandler* ccDexHandler::copy() {
+DexHandler* ccDexHandler::copy() const {
   DexHandler* ret = (DexHandler*)calloc(1, sizeof(DexHandler));
   copy_handler(*this, ret);
   return ret;
 }
 
-void ccDexTryBlock::copy_from(DexTryBlock* tb) {
+void ccDexTryBlock::copy_from(const DexTryBlock* tb) {
   fill_try_block(*this, tb);
 }
 
-void ccDexTryBlock::copy_to(DexTryBlock* tb) {
+void ccDexTryBlock::copy_to(DexTryBlock* tb) const {
   copy_try_block(*this, tb);
 }
 
-DexTryBlock* ccDexTryBlock::copy() {
+DexTryBlock* ccDexTryBlock::copy() const {
   DexTryBlock* ret = (DexTryBlock*)calloc(1, sizeof(DexTryBlock));
   copy_try_block(*this, ret);
   return ret;
 }
 
-void ccDexInstruction::copy_from(DexInstruction* insn) {
+void ccDexInstruction::copy_from(const DexInstruction* insn) {
   fill_insn(*this, insn);
 }
 
-void ccDexInstruction::copy_to(DexInstruction* insn) {
+void ccDexInstruction::copy_to(DexInstruction* insn) const {
   copy_instruction(*this, insn);
 }
 
-DexInstruction* ccDexInstruction::copy() {
+DexInstruction* ccDexInstruction::copy() const {
   DexInstruction* ret = (DexInstruction*)calloc(1, sizeof(DexInstruction));
   copy_instruction(*this, ret);
   return ret;
 }
 
-void ccDexCode::copy_from(DexCode* code) {
+void ccDexCode::copy_from(const DexCode* code) {
   fill_code_body(*this, code);
 }
 
-void ccDexCode::copy_to(DexCode* code) {
+void ccDexCode::copy_to(DexCode* code) const {
   copy_code(*this, code);
 }
 
-DexCode* ccDexCode::copy() {
+DexCode* ccDexCode::copy() const {
   DexCode* ret = (DexCode*)calloc(1, sizeof(DexCode));
   copy_code(*this, ret);
   return ret;
 }
 
-void ccDexMethod::copy_from(DexMethod* mtd) {
+void ccDexMethod::copy_from(const DexMethod* mtd) {
   fill_method(*this, mtd);
 }
 
-void ccDexMethod::copy_to(DexMethod* mtd) {
+void ccDexMethod::copy_to(DexMethod* mtd) const {
   copy_method(*this, mtd);
 }
 
-DexMethod* ccDexMethod::copy() {
+DexMethod* ccDexMethod::copy() const {
   DexMethod* ret = (DexMethod*)calloc(1, sizeof(DexMethod));
   copy_method(*this, ret);
   return ret;
 }
 
-void ccDexClass::copy_from(DexClass* cl) {
+void ccDexClass::copy_from(const DexClass* cl) {
   fill_class(*this, cl);
 }
 
-void ccDexClass::copy_to(DexClass* cl) {
+void ccDexClass::copy_to(DexClass* cl) const {
   copy_class(*this, cl);
 }
 
-DexClass* ccDexClass::copy() {
+DexClass* ccDexClass::copy() const {
   DexClass* ret = (DexClass*)calloc(1, sizeof(DexClass));
   copy_class(*this, ret);
   return ret;
 }
 
-void ccDexFile::copy_from(DexFile* f) {
+void ccDexFile::copy_from(const DexFile* f) {
   fill_cc(*this, f);
 }
 
-void ccDexFile::copy_to(DexFile* f) {
+void ccDexFile::copy_to(DexFile* f) const {
   copy_file(*this, f);
 }
 
-DexFile* ccDexFile::copy() {
+DexFile* ccDexFile::copy() const {
   DexFile* ret = (DexFile*)calloc(1, sizeof(DexFile));
   copy_file(*this, ret);
   return ret;
@@ -992,7 +993,7 @@ bool ccDexFile::read_buffer(void* buffer, dx_uint size) {
   return 1;
 }
 
-void ccDexFile::write_file(FILE* fout) {
+void ccDexFile::write_file(FILE* fout) const {
   DexFile* dxf = copy();
   dxc_write_file(dxf, fout);
   dxc_free_file(dxf);

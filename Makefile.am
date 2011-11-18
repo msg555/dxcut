@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = subdir-objects
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
-LIBRARY_VERSION = 1:1:0
+LIBRARY_VERSION = 1:2:0
 
 lib_LTLIBRARIES = libdxcut.la libdxcutcc.la
 

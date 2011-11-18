@@ -50,7 +50,7 @@ void dxc_free_field(DexField* field);
  *  \brief Returns true if this field marks the end of a field list.
  */
 extern
-int dxc_is_sentinel_field(DexField* field);
+int dxc_is_sentinel_field(const DexField* field);
 
 /** \fn void dxc_make_sentinel_field(DexField* field)
  *  \brief Marks this field the end of a list.

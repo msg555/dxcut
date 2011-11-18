@@ -90,7 +90,7 @@ void dxc_free_field(DexField* field) {
   free(field->annotations);
 }
 
-int dxc_is_sentinel_field(DexField* field) {
+int dxc_is_sentinel_field(const DexField* field) {
   return field->name == NULL;
 }
 

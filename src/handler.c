@@ -25,7 +25,7 @@ void dxc_free_handler(DexHandler* handler) {
   dxc_free_str(handler->type);
 }
 
-int dxc_is_sentinel_handler(DexHandler* handler) {
+int dxc_is_sentinel_handler(const DexHandler* handler) {
   return handler->addr == 0xFFFFFFFFU;
 }
 

@@ -53,7 +53,7 @@ void dxc_free_try_block(DexTryBlock* try_block);
  *  \brief Returns true if this try block marks the end of a try block list.
  */
 extern
-int dxc_is_sentinel_try_block(DexTryBlock* try_block);
+int dxc_is_sentinel_try_block(const DexTryBlock* try_block);
 
 /** \fn void dxc_make_sentinel_try_block(DexTryBlock* try_block)
  *  \brief Marks the passed try block as the end of a list.

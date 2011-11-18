@@ -134,7 +134,7 @@ void dxc_free_method(DexMethod* method) {
   free(method->parameter_annotations);
 }
 
-int dxc_is_sentinel_method(DexMethod* method) {
+int dxc_is_sentinel_method(const DexMethod* method) {
   return method->prototype == NULL;
 }
 

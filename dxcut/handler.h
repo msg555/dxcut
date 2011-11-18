@@ -43,7 +43,7 @@ void dxc_free_handler(DexHandler* handler);
  *  \brief Returns true if this handler marks the end of a handler list.
  */
 extern
-int dxc_is_sentinel_handler(DexHandler* handler);
+int dxc_is_sentinel_handler(const DexHandler* handler);
 
 /** \fn void dxc_make_sentinel_handler(DexHandler* handler)
  *  \brief Marks the passed handler as the end of a list.

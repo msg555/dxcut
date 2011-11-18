@@ -76,7 +76,7 @@ void dxc_free_annotation(DexAnnotation* annotation);
  *  \brief Returns true if this annotation marks the end of an annotation list.
  */
 extern
-int dxc_is_sentinel_annotation(DexAnnotation* annotation);
+int dxc_is_sentinel_annotation(const DexAnnotation* annotation);
 
 /** \fn void dxc_make_sentinel_annotation(DexAnnotation* annotation)
  *  \brief Marks the passed annotation as the end of a list.
@@ -96,7 +96,7 @@ void dxc_free_parameter(DexNameValuePair* parameter);
  *         name value pair list.
  */
 extern
-int dxc_is_sentinel_parameter(DexNameValuePair* parameter);
+int dxc_is_sentinel_parameter(const DexNameValuePair* parameter);
 
 /** \fn void dxc_make_sentinel_parameter(DexNameValuePair* parameter)
  *  \brief Marks the passed named value pair as the end of a list.

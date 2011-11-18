@@ -215,7 +215,7 @@ int dxc_read_value(read_context* ctx, DexValue* value, dx_uint* offset,
 static int buf_size = -1;
 static char* buffer = NULL;
 
-const char* dxc_value_nice(DexValue* value) {
+const char* dxc_value_nice(const DexValue* value) {
   if(buf_size == -1) {
     buf_size = 30;
     buffer = (char*)malloc(31);
@@ -376,7 +376,7 @@ void dxc_free_value(DexValue* value) {
   }
 }
 
-int dxc_is_sentinel_value(DexValue* value) {
+int dxc_is_sentinel_value(const DexValue* value) {
   return value->type == VALUE_SENTINEL;
 }
 

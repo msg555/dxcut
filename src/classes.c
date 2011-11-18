@@ -259,7 +259,7 @@ void dxc_free_class(DexClass* cl) {
   free(cl->virtual_methods);
 }
 
-int dxc_is_sentinel_class(DexClass* cl) {
+int dxc_is_sentinel_class(const DexClass* cl) {
   return cl->name == NULL;
 }
 

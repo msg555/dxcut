@@ -95,7 +95,7 @@ typedef struct dex_value_t DexValue;
  *  the form of a static buffer.
  */
 extern
-const char* dxc_value_nice(DexValue* value);
+const char* dxc_value_nice(const DexValue* value);
 
 /** \fn void dxc_free_value(DexValue* value)
  *  \brief Frees all data associated with this value. Does not attempt to free
@@ -108,7 +108,7 @@ void dxc_free_value(DexValue* value);
  *  \brief Returns true if this value marks the end of a value list.
  */
 extern
-int dxc_is_sentinel_value(DexValue* value);
+int dxc_is_sentinel_value(const DexValue* value);
 
 /** \fn void dxc_make_sentinel_value(DexValue* value)
  *  \brief Makes the passed value the end of a value list.

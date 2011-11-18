@@ -32,7 +32,7 @@ void dxc_free_try_block(DexTryBlock* try_block) {
   free(try_block->catch_all_handler);
 }
 
-int dxc_is_sentinel_try_block(DexTryBlock* try_block) {
+int dxc_is_sentinel_try_block(const DexTryBlock* try_block) {
   return try_block->handlers == NULL;
 }
 

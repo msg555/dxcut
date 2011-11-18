@@ -52,9 +52,9 @@ class ccDexValue {
                                    // VALUE_ANNOATATION
   bool val_boolean;
 
-  void copy_from(DexValue* val);
-  void copy_to(DexValue* val);
-  DexValue* copy();
+  void copy_from(const DexValue* val);
+  void copy_to(DexValue* val) const;
+  DexValue* copy() const;
 };
 
 class ccDexNameValuePair {
@@ -62,9 +62,9 @@ class ccDexNameValuePair {
   std::string name;
   ccDexValue value;
 
-  void copy_from(DexNameValuePair* nvp);
-  void copy_to(DexNameValuePair* nvp);
-  DexNameValuePair* copy();
+  void copy_from(const DexNameValuePair* nvp);
+  void copy_to(DexNameValuePair* nvp) const;
+  DexNameValuePair* copy() const;
 };
 
 class ccDexAnnotation {
@@ -73,9 +73,9 @@ class ccDexAnnotation {
   std::string type;
   std::vector<ccDexNameValuePair> parameters;
 
-  void copy_from(DexAnnotation* an);
-  void copy_to(DexAnnotation* an);
-  DexAnnotation* copy();
+  void copy_from(const DexAnnotation* an);
+  void copy_to(DexAnnotation* an) const;
+  DexAnnotation* copy() const;
 };
 
 class ccDexField {
@@ -85,9 +85,9 @@ class ccDexField {
   std::string name;
   std::vector<ccDexAnnotation> annotations;
 
-  void copy_from(DexField* fld);
-  void copy_to(DexField* fld);
-  DexField* copy();
+  void copy_from(const DexField* fld);
+  void copy_to(DexField* fld) const;
+  DexField* copy() const;
 };
 
 class ccDexDebugInstruction {
@@ -100,9 +100,9 @@ class ccDexDebugInstruction {
   std::string type;
   std::string sig;
 
-  void copy_from(DexDebugInstruction* dbg_insn);
-  void copy_to(DexDebugInstruction* dbg_insn);
-  DexDebugInstruction* copy();
+  void copy_from(const DexDebugInstruction* dbg_insn);
+  void copy_to(DexDebugInstruction* dbg_insn) const;
+  DexDebugInstruction* copy() const;
 };
 
 class ccDexDebugInfo {
@@ -111,9 +111,9 @@ class ccDexDebugInfo {
   std::vector<std::string> parameter_names;
   std::vector<ccDexDebugInstruction> insns;
 
-  void copy_from(DexDebugInfo* debug_info);
-  void copy_to(DexDebugInfo* debug_info);
-  DexDebugInfo* copy();
+  void copy_from(const DexDebugInfo* debug_info);
+  void copy_to(DexDebugInfo* debug_info) const;
+  DexDebugInfo* copy() const;
 };
 
 class ccDexHandler {
@@ -121,9 +121,9 @@ class ccDexHandler {
   std::string type; // Should be empty string for catch all handlers.
   dx_uint addr;
 
-  void copy_from(DexHandler* handler);
-  void copy_to(DexHandler* handler);
-  DexHandler* copy();
+  void copy_from(const DexHandler* handler);
+  void copy_to(DexHandler* handler) const;
+  DexHandler* copy() const;
 };
 
 class ccDexTryBlock {
@@ -138,9 +138,9 @@ class ccDexTryBlock {
   std::vector<ccDexHandler> handlers;
   ccDexHandler* catch_all_handler; // NULL if not present, allocate with new.
 
-  void copy_from(DexTryBlock* tb);
-  void copy_to(DexTryBlock* tb);
-  DexTryBlock* copy();
+  void copy_from(const DexTryBlock* tb);
+  void copy_to(DexTryBlock* tb) const;
+  DexTryBlock* copy() const;
 };
 
 class ccDexInstruction {
@@ -162,9 +162,9 @@ class ccDexInstruction {
   std::vector<dx_ubyte> data; // FILL_ARRAY_DATA
   dx_ushort param[2];
 
-  void copy_from(DexInstruction* insn);
-  void copy_to(DexInstruction* insn);
-  DexInstruction* copy();
+  void copy_from(const DexInstruction* insn);
+  void copy_to(DexInstruction* insn) const;
+  DexInstruction* copy() const;
 };
 
 class ccDexCode {
@@ -181,9 +181,9 @@ class ccDexCode {
   std::vector<ccDexTryBlock> tries;
   std::vector<ccDexInstruction> insns;
 
-  void copy_from(DexCode* code);
-  void copy_to(DexCode* code);
-  DexCode* copy();
+  void copy_from(const DexCode* code);
+  void copy_to(DexCode* code) const;
+  DexCode* copy() const;
 };
 
 class ccDexMethod {
@@ -200,9 +200,9 @@ class ccDexMethod {
   std::vector<ccDexAnnotation> annotations;
   std::vector<std::vector<ccDexAnnotation> > parameter_annotations;
 
-  void copy_from(DexMethod* mtd);
-  void copy_to(DexMethod* mtd);
-  DexMethod* copy();
+  void copy_from(const DexMethod* mtd);
+  void copy_to(DexMethod* mtd) const;
+  DexMethod* copy() const;
 };
 
 class ccDexClass {
@@ -219,9 +219,9 @@ class ccDexClass {
   std::vector<ccDexMethod> direct_methods;
   std::vector<ccDexMethod> virtual_methods;
 
-  void copy_from(DexClass* cl);
-  void copy_to(DexClass* cl);
-  DexClass* copy();
+  void copy_from(const DexClass* cl);
+  void copy_to(DexClass* cl) const;
+  DexClass* copy() const;
 };
 
 class ccOdexData {
@@ -251,13 +251,13 @@ class ccDexFile {
   std::vector<ccDexClass> classes;
   ccOdexData* metadata;
 
-  void copy_from(DexFile* f);
-  void copy_to(DexFile* f);
-  DexFile* copy();
+  void copy_from(const DexFile* f);
+  void copy_to(DexFile* f) const;
+  DexFile* copy() const;
 
   bool read_file(FILE* f);
   bool read_buffer(void* buffer, dx_uint size);
-  void write_file(FILE* fout);
+  void write_file(FILE* fout) const;
 };
 
 }

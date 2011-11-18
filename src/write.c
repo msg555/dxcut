@@ -1123,9 +1123,11 @@ void write_dalvik(write_context* ctx, data_item* d,
           dx_long vv = v;
           if(size < 16 && 
              (vv < -(1LL << (size * 4 - 1)) || (1LL << (size * 4 - 1)) <= vv)) {
+fprintf(stderr, "wut2 %s\n", fmt.name);
             DXC_ERROR("special value too large for encoding");
           }
         } else if((size < 16) && v >= (1ULL << size * 4)) { 
+fprintf(stderr, "wut %s\n", fmt.name);
           DXC_ERROR("special value too large for encoding");
         }
         switch(pos) {
