@@ -758,8 +758,8 @@ const DexOpFormat dex_opcode_formats[256] = {
 /* ED */ { "throw-verification-error", "0x", 1, SPECIAL_NONE, 0, 0, FE},
 /* EE */ { "execute-inline", "5c", 3, SPECIAL_INLINE, 4, 4, FB},
 /* EF */ { "execute-inline/range", "rc", 3, SPECIAL_INLINE, 4, 4, FB},
-/* F0 */ { "invoke-direct-empty", "5c", 3, SPECIAL_METHOD, 4, 4, FC},
-/* F1 */ { 0, "0x", 1, SPECIAL_NONE, 0, 0, 0}, // Unallocated
+/* F0 */ { "object-init/range", "rc", 3, SPECIAL_METHOD, 4, 4, FC},
+/* F1 */ { "return-void-barrier", "0x", 1, SPECIAL_NONE, 0, 0, FD},
 /* F2 */ { "iget-quick", "2cs", 2, SPECIAL_OBJECT, 4, 4, FB},
 /* F3 */ { "iget-wide-quick", "2cs", 2, SPECIAL_OBJECT, 4, 4, FB | WD1},
 /* F4 */ { "iget-object-quick", "2cs", 2, SPECIAL_OBJECT, 4, 4, FB},
